@@ -127,12 +127,14 @@ class RobbyTheRobot:
         elif type == 5:
             return int(self.grid[self.column - 1][self.row])
         
+        
     def act(self, type):
 
         # A. If type = 0: Robby the Robot attempts to move Northwise!
         if type == 0:
             if self.sense(2) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Northwise!
+            
             else:
                 self.row -= 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Northwise normally!
@@ -141,6 +143,7 @@ class RobbyTheRobot:
         elif type == 1:
             if self.sense(3) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Southwise!
+            
             else:
                 self.row += 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Southwise normally!
@@ -149,6 +152,7 @@ class RobbyTheRobot:
         elif type == 2:
             if self.sense(4) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Eastwise!
+            
             else:
                 self.column += 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Eastwise normally!
@@ -157,6 +161,7 @@ class RobbyTheRobot:
         elif type == 3:
             if self.sense(5) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Westwise!
+            
             else:
                 self.column -= 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Westwise normally!
@@ -167,12 +172,15 @@ class RobbyTheRobot:
             if self.sense(1) == AgentState.CAN_TILE:
                 self.grid[self.column][self.row] = AgentState.CLEAN_TILE
                 return RoboBank.CAN_REFUND # Robby the Robot successfully picks-up a can!
+            
             else:
                 return RoboBank.WHERE_CAN # Robby the Robot attempts to pick-up a can that does not exist, oh dear!
+            
             
     ## V.2. Robby the Robot's Main AI Algorithmic Programming: Epsilon-Type Greedy Action Selection ("EPSGAS"), Q-Learning Based Reinforcement Learning Algorithmic Function-Implementations        
 
     def qgen(self, state, qaction):
+        
         return self.qmatrix[int(state[0]), int(state[1]), int(state[2]), int(state[3]), int(state[4]), int(qaction)]
     
     
@@ -253,48 +261,62 @@ class RobbyTheRobot:
 ### VI. The Main Program Implementation of Robby the Robot!
 
 def main():
-    print("./robolearn.AI: Welcome to RoboLearnOS v3.0!")
-    time.sleep(1)
+    print("./robolearn.AI: Welcome to RoboLearnOS v3.0!\n")
+    time.sleep(3)
     print("./robolearn.AI: Robby the Robot is now booting up...")
-    time.sleep(1)
+    time.sleep(5)
     
     robby = RobbyTheRobot()
     print("./robolearn.AI: Robby the Robot has successfully booted up!")
-    
-    print("./robolearn.AI: Initial RobbyGrid:")
+    time.sleep(2)
+    print("\n./robolearn.AI: Here is the [Initial Grid] composed of three, different types of square tiles, that Robby the Robot has been randomly placed within...")
+    time.sleep(5)
+    print("./robolearn.AI: ...where '0'-tiles are [Clean Tiles], '1'-tiles are [Can Tiles], and '2'-tiles are [Wall Tiles] as follows:")
+    time.sleep(7)
+    print("")
     print(robby.grid)
-    print("./robolearn.AI: ...with x,y coordinates as follows:")
-    print("(" + str(robby.column) + ", " + str(robby.row) + ")\n")
-    
+    print("")
+    time.sleep(10)
+    print("./robolearn.AI: ...where Robby the Robot's randomly-placed tile is currently located at the following (x,y) coordinates:")
+    time.sleep(1)
+    print("\n(" + str(robby.column) + ", " + str(robby.row) + ")\n")
+    time.sleep(5)
     # A. Robby the Robot's Environment is initialized!
-    print("./robolearn.AI: Robby the Robot is now ready to go!")
-    
+    print("./robolearn.AI: ...Alright, sweet! Robby the Robot is now [ready to learn!]")
+    time.sleep(2)
     # B.I. Robby the Robot Begins Training!
-    print("./robolearn.AI: Robby the Robot will now begin training!")
-    
+    print("./robolearn.AI: Robby the Robot will soon [begin training!]")
+    time.sleep(2)
     print("./robolearn.AI: Creating a blank training-graph...")
     x1points = []
     y1points = []
     print("./robolearn.AI: ...new training-graph successfully created!")
     
     # B.II. Robby the Robot Performs RL-Based Trainings for a specified number of episodes!
-    print("./robolearn.AI: Robby the Robot will commence training in 3...")
+    print("\n\n./robolearn.AI: Robby the Robot will commence training in 3...")
     time.sleep(1)
     print("./robolearn.AI: 2..")
     time.sleep(1)
     print("./robolearn.AI: 1.")
     time.sleep(1)
+    print("\n./robolearn.AI: [Begin Training!]\n")
+    time.sleep(1)
     for trainepisodes in range(N_EPISODES):
         robobal = robby.episoda(trainepisodes)
-        print("./robolearn.AI: Robby the Robot has performed [Training] Episode #", trainepisodes, ", with ", robobal, " RoboCoins!")
+        print("./robolearn.AI: Robby the Robot has performed [Training] Episode #" + str(trainepisodes) + ", with " + str(robobal) + " RoboCoins!")
 
     # C. Robby the Robot Completes Testing!
-    print("./robolearn.AI: Robby the Robot has successfully completed training!")
+    print("")
+    print("./robolearn.AI: Robby the Robot has [successfully completed training!]")
+    time.sleep(1)
     
     # D. Formulating the Training-Graph!
-    print("./robolearn.AI: The RoboAccount Firm ACME Inc. Corp. is now tabulating Robby the Robot's training results!")
-    print("./robolearn.AI: Please make sure to close the displayed Training-Graph to continue!")
-    
+    print("\n")
+    print("./robolearn.AI: The RoboAccount Firm ACME Inc. Corp. is now tabulating Robby the Robot's [training] results!")
+    time.sleep(1)
+    print("\n\n")
+    print("<!> ./robolearn.AI: Please make sure to close the displayed [Training-Graph] to continue! <!>")
+
     for x1 in range(int(len(robby.robocoins) / TRAINING_PLOT_POINTS)):
         x1point = x1 * TRAINING_PLOT_POINTS
         y1point = 0
@@ -307,7 +329,7 @@ def main():
         x1points.append(x1point)
         y1points.append(y1point)
     
-    pyplot.plot(x1points, y1points, label="Robby the Robot's Training Reward Plot!")
+    pyplot.plot(x1points, y1points, label="Robby the Robot's [Training-Reward] Plot!")
     
     pyplot.xlim([TRAINING_PLOT_POINTS, N_EPISODES])
     pyplot.ylim([-100, 700])
@@ -315,8 +337,11 @@ def main():
     pyplot.show()
     pyplot.savefig('robby-training-reward-plot.png')
     
+    print("\n./robolearn.AI: Awesome, thank you!")
+    time.sleep(2)
+  
     # E.I. Robby the Robot Begins Testing!
-    print("./robolearn.AI: Robby the Robot will now begin testing!")
+    print("\n./robolearn.AI: Robby the Robot will soon [begin testing!]")
     
     print("./robolearn.AI: Creating a blank testing-graph...")
     x2points = []
@@ -326,27 +351,35 @@ def main():
     # E.II. Resetting Robby the Robot's RoboCoin Transaction History for Testing!
     print("./robolearn.AI: Depositing Robby the Robot's Training-Compensation RoboCoins into their RoboBank Account!\n\t(Dan's Dev Comment: Actual used RoboCoins variable will still be reset correctly.)")
     robby.robodeposit()
+    time.sleep(1)
     print("./robolearn.AI: Robby the Robot's RoboBank Account has been successfully credited with their Training-Compensation RoboCoins!")
-    print("./robolearn.AI: Robby the Robot's RoboWallet now has ", robby.robocoins, " RoboCoins!")
-    
+    print("./robolearn.AI: Robby the Robot's RoboWallet Transaction History is now: ", robby.robocoins, " RoboCoins!")
+    time.sleep(1)
     # E.III. Robby the Robot Performs RL-Based Testings for a specified number of episodes!
-    print("./robolearn.AI: Robby the Robot testing will commence in 3...")
+    print("\n\n./robolearn.AI: Robby the Robot [Testing] will commence in 3...")
     time.sleep(1)
     print("./robolearn.AI: 2..")
     time.sleep(1)
     print("./robolearn.AI: 1.")
     time.sleep(1)
+    print("\n./robolearn.AI: [Begin Testing!]\n")
+    time.sleep(1)
     for testepisodes in range(N_EPISODES):
         robobal = robby.episoda(trainepisodes, True)
-        print("./robolearn.AI: Robby the Robot has performed [Testing] Episode #", testepisodes, ", with ", robobal, " RoboCoins!")
+        print("./robolearn.AI: Robby the Robot has performed [Testing] Episode #" + str(testepisodes) + ", with " + str(robobal) + " RoboCoins!")
 
     # F. Robby the Robot Completes Testing!
-    print("./robolearn.AI: Robby the Robot has successfully completed testing!")
     print("")
+    print("./robolearn.AI: Robby the Robot has [successfully completed testing!]")
+    time.sleep(3)
     
     # G. Formulating the Testing-Graph!
-    print("./robolearn.AI: The RoboAccount Firm ACME Inc. Corp. is now tabulating Robby the Robot's testing results!")
-    print("./robolearn.AI: Please make sure to close the displayed Testing-Graph to continue!")
+    print("\n")
+    print("./robolearn.AI: The RoboAccount Firm ACME Inc. Corp. is now tabulating Robby the Robot's [testing] results!")
+    time.sleep(1)
+    print("\n\n")
+    print("<!> ./robolearn.AI: Please make sure to close the displayed [Testing-Graph] to continue! <!>")
+    
     for x2 in range(int(len(robby.robocoins) / TESTING_PLOT_POINTS)):
         x2point = x2 * TESTING_PLOT_POINTS
         y2point = 0
@@ -359,7 +392,7 @@ def main():
         x2points.append(x2point)
         y2points.append(y2point)
     
-    pyplot.plot(x2points, y2points, label="Robby the Robot's Testing Reward Plot!")
+    pyplot.plot(x2points, y2points, label="Robby the Robot's [Testing-Reward] Plot!")
     
     pyplot.xlim([TESTING_PLOT_POINTS, N_EPISODES])
     pyplot.ylim([-100, 700])
@@ -367,45 +400,65 @@ def main():
     pyplot.show()
     pyplot.savefig('robby-testing-reward-plot.png')
     
+    print("\n./robolearn.AI: Thank you, awesome!")
+    time.sleep(2)
+
     # H. Robby the Robot's RoboCoin Transaction History is now displayed! ("Just for Fun" Statistic Based on: Training + Testing)
-    print("./robolearn.AI: Here is Robby the Robot's Grand RoboBank Balance...")
-    print("./robolearn.AI: ...which represents their Total Accumulated Sum of RoboCoins throughout both Training & Testing:")
+    print("\n\n")
+    print("./robolearn.AI: Here is Robby the Robot's [Grand RoboBank Balance]...")
+    print("./robolearn.AI: ...which represents their [Total Accumulated Sum of RoboCoins] throughout [both Training & Testing]:")
     
-    print(robby.robobankbal)
+    print("\n..." + str(robby.robobankbal) + " RoboCoins!\n")
+    time.sleep(1)
     
     # I. Conclusion with Robby the Robot's Test-Average & Test-Standard-Deviation values!
-    print("./robolearn.AI: Robby the Robot's Conclusion Statistics are as follows...")
-    
-    testaverage = sum(y2points) / len(y2points)
-    print("./robolearn.AI: ...Robby the Robot's Test-Average is: ", testaverage)
-    
-    teststandarddeviation = np.std(y2points)
-    print("./robolearn.AI: ...Robby the Robot's Test-Standard-Deviation is: ", teststandarddeviation)
-    
-    # J. That's all folks! Thank you for using Robby the Robot!
-    print("./robolearn.AI: Robby the Robot has successfully completed all of its tasks!")
-    time.sleep(1)
-    print("./robolearn.AI: ...well, there is always room for improvement!")
-    print("./robolearn.AI: Thank you for using RoboLearnOS!")
-    print("./robolearn.AI: ...and have a nice day!")
+    print("\n\n")
+    print("./robolearn.AI: Robby the Robot's [[Conclusion Statistics]] are as follows...")
     time.sleep(5)
-    print("./robolearn.AI: Program is now wrapping-up...")
-    time.sleep(1)
+    testaverage = sum(y2points) / len(y2points)
+    print("\n./robolearn.AI: ...Robby the Robot's [Test-Average] value is: ", testaverage)
+    time.sleep(5)
+    teststandarddeviation = np.std(y2points)
+    print("\n./robolearn.AI: ...Robby the Robot's [Test-Standard-Deviation] value is: ", teststandarddeviation)
+    time.sleep(10)
+    # J. That's all folks! Thank you for using Robby the Robot!
+    print("\n\n./robolearn.AI: Robby the Robot has [successfully completed] all of its tasks!")
+    time.sleep(10)
+    print("\n./robolearn.AI: ...well, there is always room for improvement!\n")
+    time.sleep(2)
+    print("./robolearn.AI: ...but for now, that's all folks!")
+    time.sleep(4)
+    print("\n")
+    print(r"""\ cs
+ \ 441  oo
+  \____|\mm
+  //_//\ \_\
+ / rl/AI\/_/
+/___/_____\
+-----------
+""")
+    print("")
+    print("./robolearn.AI: Thank you for using RoboLearnOS!\n")
+    time.sleep(3)
+    print("./robolearn.AI: Please have a lovely Winter Break!\n")
+    time.sleep(5)
+    print("./robolearn.AI: [Program is now wrapping-up...]\n")
+    time.sleep(3)
     
 if __name__ == "__main__":
     
 ## Credits to ASCIIWorld.com (http://www.asciiworld.com/-Robots,24-.html) for the ASCII art below:
     print("")
-    print(r"""\ 
- \      oo
+    print(r"""\ cs
+ \ 441  oo
   \____|\mm
   //_//\ \_\
- /K-9/  \/_/
+ / rl/AI\/_/
 /___/_____\
 -----------
 """)
     time.sleep(1)
-    print("RoboLearnOS v3.0.0, by dan & co. (llc) nov. 2022")
+    print("RoboLearnOS v3.0.0, by dan & co. (llc) nov. 2022 - Special Thanks to TA Li-Yun & Dr. Rhodes!")
     print("")
     time.sleep(2)
     
