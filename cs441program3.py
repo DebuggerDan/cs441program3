@@ -253,8 +253,8 @@ class RobbyTheRobot:
             robowallet += self.tstep(episodeid, testmode)
         
         self.robocoins.append(robowallet)
-        self.grid = self.gridualize()
-        self.column, self.row = self.randompos()
+        self.grid = self.gridualize() # Re-generating the Grid each episode!
+        self.column, self.row = self.randompos() # Randomized positions each time!
         return robowallet
     
     
@@ -310,12 +310,12 @@ def main():
     print("./robolearn.AI: Robby the Robot has [successfully completed training!]")
     time.sleep(1)
     
-    # D. Formulating the Training-Graph!
+    # D. Formulating the Training-Reward-Graph!
     print("\n")
     print("./robolearn.AI: The RoboAccount Firm ACME Inc. Corp. is now tabulating Robby the Robot's [training] results!")
     time.sleep(1)
     print("\n\n")
-    print("<!> ./robolearn.AI: Please make sure to close the displayed [Training-Graph] to continue! <!>")
+    print("<!> ./robolearn.AI: Please make sure to close the displayed [Training-Reward-Graph] to continue! <!>")
 
     for x1 in range(int(len(robby.robocoins) / TRAINING_PLOT_POINTS)):
         x1point = x1 * TRAINING_PLOT_POINTS
@@ -330,12 +330,17 @@ def main():
         y1points.append(y1point)
     
     pyplot.plot(x1points, y1points, label="Robby the Robot's [Training-Reward] Plot!")
-    
+    pyplot.title('Robby the Robot: [Training-Reward] Plot!')
+    pyplot.xlabel('# of Training Episode Iterations')
+    pyplot.ylabel('RoboCoins (reward-values)')
+    pyplot.legend()
     pyplot.xlim([TRAINING_PLOT_POINTS, N_EPISODES])
     pyplot.ylim([-100, 700])
     
     pyplot.show()
-    pyplot.savefig('robby-training-reward-plot.png')
+    # pyplot.savefig('robby-training-reward-plot.png')
+    
+    pyplot.close()
     
     print("\n./robolearn.AI: Awesome, thank you!")
     time.sleep(2)
@@ -392,13 +397,19 @@ def main():
         x2points.append(x2point)
         y2points.append(y2point)
     
-    pyplot.plot(x2points, y2points, label="Robby the Robot's [Testing-Reward] Plot!")
+    pyplot.plot(x2points, y2points, label="Robby the Robot's [Testing-Data] Plot!")
+    pyplot.title('Robby the Robot: [Testing-Data] Plot!')
+    pyplot.xlabel('# of Testing Episode Iterations')
+    pyplot.ylabel('RoboCoins (reward-values)')
+    pyplot.legend()
     
     pyplot.xlim([TESTING_PLOT_POINTS, N_EPISODES])
     pyplot.ylim([-100, 700])
     
     pyplot.show()
-    pyplot.savefig('robby-testing-reward-plot.png')
+    # pyplot.savefig('robby-testing-reward-plot.png')
+    
+    pyplot.close()
     
     print("\n./robolearn.AI: Thank you, awesome!")
     time.sleep(2)
