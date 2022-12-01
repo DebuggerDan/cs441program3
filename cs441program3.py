@@ -62,7 +62,8 @@ class RobbyTheRobot:
         
         # Bonus Constant for Total RoboCoins Robby the Robot has collected from all episodes & steps - both from testing & testing combined - together! (Purely for fun!)
         self.robobankbal = 0
-        
+    
+    
     @staticmethod
     def gridualize():
         
@@ -72,11 +73,12 @@ class RobbyTheRobot:
         for x in range(g_size):
             for y in range(g_size):
                 
-                if x == 0 or x == (g_size - 1) or y == 0 or y == (g_size - 1):
+                if x == 0 or x == g_size - 1 or \
+                    y == 0 or y == g_size - 1:
                     grid[x][y] = AgentState.WALL_TILE
                     
                 else:
-                    if CAN_RATE >= rnd.uniform(0, 1):
+                    if rnd.uniform(0, 1) <= CAN_RATE:
                         grid[x][y] = AgentState.CAN_TILE
                 
         return grid
@@ -86,7 +88,7 @@ class RobbyTheRobot:
     def randompos():
         
         #return rnd.randint(1, GRID), rnd.randint(1, GRID)
-        return (rnd.randrange(1, GRID) + 1), (rnd.randrange(1, GRID) + 1)
+        return rnd.randrange(GRID) + 1, rnd.randrange(GRID) + 1
     
     
     #def robbyreboot(self):
@@ -127,41 +129,42 @@ class RobbyTheRobot:
         
     def act(self, type):
 
-        # A. If type = 1: Robby the Robot attempts to move Northwise!
-        if type == 1:
+        # A. If type = 0: Robby the Robot attempts to move Northwise!
+        if type == 0:
             if self.sense(2) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Northwise!
             else:
                 self.row -= 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Northwise normally!
             
-        # B. If type = 2: Robby the Robot attempts to move Southwise!
-        if type == 2:
+        # B. If type = 1: Robby the Robot attempts to move Southwise!
+        elif type == 1:
             if self.sense(3) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Southwise!
             else:
                 self.row += 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Southwise normally!
         
-        # C. If type = 3: Robby the Robot attempts to move Eastwise!
-        if type == 3:
+        # C. If type = 2: Robby the Robot attempts to move Eastwise!
+        elif type == 2:
             if self.sense(4) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Eastwise!
             else:
                 self.column += 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Eastwise normally!
             
-        # D. If type = 4: Robby the Robot attempts to move Westwise!
-        if type == 4:
+        # D. If type = 3: Robby the Robot attempts to move Westwise!
+        elif type == 3:
             if self.sense(5) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Westwise!
             else:
                 self.column -= 1
                 return RoboBank.NORMAL_MOVEMENT # Robby the Robot successfully moves Westwise normally!
             
-        # E. If type = 5: Robby the Robot attempts to pick-up a can!
-        if type == 5:
-            if self.sense(5) == AgentState.CAN_TILE:
+        # E. If type != {0:3}: Robby the Robot attempts to pick-up a can!
+        #if type == 5:
+        else:
+            if self.sense(1) == AgentState.CAN_TILE:
                 self.grid[self.column][self.row] = AgentState.CLEAN_TILE
                 return RoboBank.CAN_REFUND # Robby the Robot successfully picks-up a can!
             else:
@@ -216,29 +219,29 @@ class RobbyTheRobot:
         return state
     
     
-    def tstep(self, episodeid, testmode=False ):
+    def tstep(self, episodeid, testmode=False):
         
         stepstate = self.scan()
         stepaction = self.epsgas(stepstate, episodeid, testmode)
-        robowallet = self.act(stepaction)
+        steprobowallet = self.act(stepaction)
         
         nextstate = self.scan()
         
-        if testmode == False: # If Robby the Robot is in training mode, then the Q-Learning Algorithmic Function-Implementations are used to update the Q-Matrix so that Robby the Robot can learn from their experiences, awesome!
+        if testmode == False: # If Robby the Robot is NOT in testing mode, therefore, if Robby the Robot is instead, in training mode, then the Q-Learning Algorithmic Function-Implementations are used to update the Q-Matrix so that Robby the Robot can learn from their experiences, awesome!
             qmatrix = self.qgen(stepstate, stepaction)
             maximum_a_qmatrix = self.qgen(nextstate, self.strategicaction(nextstate))
             
-            new_qmatrix = qmatrix + ETA_LEARNING_RATE * (robowallet + (GAMMA_DISCOUNT_FACTOR * maximum_a_qmatrix) - qmatrix)
+            new_qmatrix = qmatrix + ETA_LEARNING_RATE * (steprobowallet + (GAMMA_DISCOUNT_FACTOR * maximum_a_qmatrix) - qmatrix)
             self.qset(stepstate, stepaction, new_qmatrix)
             
-        return robowallet
+        return steprobowallet
             
     
     def episoda(self, episodeid, testmode=False):
         
         robowallet = 0
         
-        for idx in range(episodeid):
+        for idx in range(M_STEPS):
             robowallet += self.tstep(episodeid, testmode)
         
         self.robocoins.append(robowallet)
@@ -275,7 +278,12 @@ def main():
     print("./robolearn.AI: ...new training-graph successfully created!")
     
     # B.II. Robby the Robot Performs RL-Based Trainings for a specified number of episodes!
-    print("./robolearn.AI: Robby the Robot has begun training...")
+    print("./robolearn.AI: Robby the Robot will commence training in 3...")
+    time.sleep(1)
+    print("./robolearn.AI: 2..")
+    time.sleep(1)
+    print("./robolearn.AI: 1.")
+    time.sleep(1)
     for trainepisodes in range(N_EPISODES):
         robobal = robby.episoda(trainepisodes)
         print("./robolearn.AI: Robby the Robot has performed [Training] Episode #", trainepisodes, ", with ", robobal, " RoboCoins!")
@@ -285,6 +293,7 @@ def main():
     
     # D. Formulating the Training-Graph!
     print("./robolearn.AI: The RoboAccount Firm ACME Inc. Corp. is now tabulating Robby the Robot's training results!")
+    print("./robolearn.AI: Please make sure to close the displayed Training-Graph to continue!")
     
     for x1 in range(int(len(robby.robocoins) / TRAINING_PLOT_POINTS)):
         x1point = x1 * TRAINING_PLOT_POINTS
@@ -321,17 +330,23 @@ def main():
     print("./robolearn.AI: Robby the Robot's RoboWallet now has ", robby.robocoins, " RoboCoins!")
     
     # E.III. Robby the Robot Performs RL-Based Testings for a specified number of episodes!
-    print("./robolearn.AI: Robby the Robot has begun testing...")
+    print("./robolearn.AI: Robby the Robot testing will commence in 3...")
+    time.sleep(1)
+    print("./robolearn.AI: 2..")
+    time.sleep(1)
+    print("./robolearn.AI: 1.")
+    time.sleep(1)
     for testepisodes in range(N_EPISODES):
         robobal = robby.episoda(trainepisodes, True)
         print("./robolearn.AI: Robby the Robot has performed [Testing] Episode #", testepisodes, ", with ", robobal, " RoboCoins!")
 
     # F. Robby the Robot Completes Testing!
     print("./robolearn.AI: Robby the Robot has successfully completed testing!")
+    print("")
     
     # G. Formulating the Testing-Graph!
     print("./robolearn.AI: The RoboAccount Firm ACME Inc. Corp. is now tabulating Robby the Robot's testing results!")
-    
+    print("./robolearn.AI: Please make sure to close the displayed Testing-Graph to continue!")
     for x2 in range(int(len(robby.robocoins) / TESTING_PLOT_POINTS)):
         x2point = x2 * TESTING_PLOT_POINTS
         y2point = 0
