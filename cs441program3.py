@@ -103,7 +103,7 @@ class RobbyTheRobot:
     ## V.1. Robby the Robot's Action Selection Algorithmic Implementation: Movement & Action Function-Implementations
     
     
-    def sense(type, self):
+    def sense(self, type):
         
         # A. If Type = 1: Current Sense
         if type == 1:
@@ -125,11 +125,11 @@ class RobbyTheRobot:
         elif type == 5:
             return int(self.grid[self.column - 1][self.row])
         
-    def act(type, self):
+    def act(self, type):
 
         # A. If type = 1: Robby the Robot attempts to move Northwise!
         if type == 1:
-            if self.sense(2, self) == AgentState.WALL_TILE:
+            if self.sense(2) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Northwise!
             else:
                 self.row -= 1
@@ -137,7 +137,7 @@ class RobbyTheRobot:
             
         # B. If type = 2: Robby the Robot attempts to move Southwise!
         if type == 2:
-            if self.sense(3, self) == AgentState.WALL_TILE:
+            if self.sense(3) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Southwise!
             else:
                 self.row += 1
@@ -145,7 +145,7 @@ class RobbyTheRobot:
         
         # C. If type = 3: Robby the Robot attempts to move Eastwise!
         if type == 3:
-            if self.sense(4, self) == AgentState.WALL_TILE:
+            if self.sense(4) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Eastwise!
             else:
                 self.column += 1
@@ -153,7 +153,7 @@ class RobbyTheRobot:
             
         # D. If type = 4: Robby the Robot attempts to move Westwise!
         if type == 4:
-            if self.sense(5, self) == AgentState.WALL_TILE:
+            if self.sense(5) == AgentState.WALL_TILE:
                 return RoboBank.OOPS # Robby the Robot oopsies-daisy's into a wall-tile attempting to move Westwise!
             else:
                 self.column -= 1
@@ -161,7 +161,7 @@ class RobbyTheRobot:
             
         # E. If type = 5: Robby the Robot attempts to pick-up a can!
         if type == 5:
-            if self.sense(5, self) == AgentState.CAN_TILE:
+            if self.sense(5) == AgentState.CAN_TILE:
                 self.grid[self.column][self.row] = AgentState.CLEAN_TILE
                 return RoboBank.CAN_REFUND # Robby the Robot successfully picks-up a can!
             else:
@@ -169,16 +169,16 @@ class RobbyTheRobot:
             
     ## V.2. Robby the Robot's Main AI Algorithmic Programming: Epsilon-Type Greedy Action Selection ("EPSGAS"), Q-Learning Based Reinforcement Learning Algorithmic Function-Implementations        
 
-    def qgen(state, qaction, self):
+    def qgen(self, state, qaction):
         return self.qmatrix[int(state[0]), int(state[1]), int(state[2]), int(state[3]), int(state[4]), int(qaction)]
     
     
-    def qset(state, action, qvalue, self):
+    def qset(self, state, action, qvalue):
         
         self.qmatrix[int(state[0]), int(state[1]), int(state[2]), int(state[3]), int(state[4]), int(action)] = qvalue
 
 
-    def epsgas(state, episode, testmode, self):
+    def epsgas(self, state, episode, testmode):
         
         if testmode == True:
             eps = EPSGAS_BASELINE
@@ -194,7 +194,7 @@ class RobbyTheRobot:
         return epsaction
     
     
-    def strategicaction(state, self):
+    def strategicaction(self, state):
         
         action_prices = np.zeros(5)
         
@@ -208,25 +208,28 @@ class RobbyTheRobot:
         
         state = np.zeros(5) # 5 different states that Robby the Robot can be in at any given time
         
-        state[0] = self.sense(1, self) # Robby the Robot's current state
-        state[1] = self.sense(2, self) # Robby the Robot's North state
-        state[2] = self.sense(3, self) # Robby the Robot's South state
-        state[3] = self.sense(4, self) # Robby the Robot's East state
-        state[4] = self.sense(5, self) # Robby the Robot's West state
+        state[0] = self.sense(1) # Robby the Robot's current state
+        state[1] = self.sense(2) # Robby the Robot's North state
+        state[2] = self.sense(3) # Robby the Robot's South state
+        state[3] = self.sense(4) # Robby the Robot's East state
+        state[4] = self.sense(5) # Robby the Robot's West state
         return state
     
     
-    def tstep(episodeid, self, testmode=False ):
+    def tstep(self, episodeid, testmode=False ):
         
         stepstate = self.scan()
         stepaction = self.epsgas(stepstate, episodeid, testmode)
-        robowallet = self.act(stepaction, self)
+        robowallet = self.act(stepaction)
         
         nextstate = self.scan()
         
         if testmode == False: # If Robby the Robot is in training mode, then the Q-Learning Algorithmic Function-Implementations are used to update the Q-Matrix so that Robby the Robot can learn from their experiences, awesome!
-            qmatrix = self.qgen(stepstate, stepaction)                
-            self.qset(stepstate, stepaction, qmatrix)
+            qmatrix = self.qgen(stepstate, stepaction)
+            maximum_a_qmatrix = self.qgen(nextstate, self.strategicaction(nextstate))
+            
+            new_qmatrix = qmatrix + ETA_LEARNING_RATE * (robowallet + (GAMMA_DISCOUNT_FACTOR * maximum_a_qmatrix) - qmatrix)
+            self.qset(stepstate, stepaction, new_qmatrix)
             
         return robowallet
             
@@ -243,10 +246,11 @@ class RobbyTheRobot:
         self.column, self.row = self.randompos()
         return robowallet
     
+    
 ### VI. The Main Program Implementation of Robby the Robot!
 
 def main():
-    print("./robolearn.AI: Welcome to roborobbyOS v3.0!")
+    print("./robolearn.AI: Welcome to RoboLearnOS v3.0!")
     time.sleep(1)
     print("./robolearn.AI: Robby the Robot is now booting up...")
     time.sleep(1)
@@ -355,7 +359,6 @@ def main():
     print(robby.robobankbal)
     
     # I. Conclusion with Robby the Robot's Test-Average & Test-Standard-Deviation values!
-    
     print("./robolearn.AI: Robby the Robot's Conclusion Statistics are as follows...")
     
     testaverage = sum(y2points) / len(y2points)
@@ -368,7 +371,7 @@ def main():
     print("./robolearn.AI: Robby the Robot has successfully completed all of its tasks!")
     time.sleep(1)
     print("./robolearn.AI: ...well, there is always room for improvement!")
-    print("./robolearn.AI: Thank you for using Robby the Robot!")
+    print("./robolearn.AI: Thank you for using RoboLearnOS!")
     print("./robolearn.AI: ...and have a nice day!")
     time.sleep(5)
     print("./robolearn.AI: Program is now wrapping-up...")
@@ -377,6 +380,7 @@ def main():
 if __name__ == "__main__":
     
 ## Credits to ASCIIWorld.com (http://www.asciiworld.com/-Robots,24-.html) for the ASCII art below:
+    print("")
     print(r"""\ 
  \      oo
   \____|\mm
@@ -386,7 +390,8 @@ if __name__ == "__main__":
 -----------
 """)
     time.sleep(1)
-    print("./robolearn.AI, v3.0.0, by dan & co. (llc) nov. 2022")
+    print("RoboLearnOS v3.0.0, by dan & co. (llc) nov. 2022")
+    print("")
     time.sleep(2)
     
     
